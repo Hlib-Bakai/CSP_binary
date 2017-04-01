@@ -11,16 +11,20 @@ namespace ai_lab_2_CSP
     {
         static Brush borderColor = Brushes.Black;
         static Brush[] boardColor = { Brushes.LightGray, Brushes.Orange, Brushes.White };
-        static int pixelSize = 60;
+
 
 
         static public void FillBoard(Graphics g, int[,] arr)
         {
             int size = (int)Math.Sqrt(arr.Length);
+            int pixelSize = (60 - ((size / 10) * 10) + ((size/50) * 3));
             int boardX = 350 - (size * pixelSize) / 2;
+            if (boardX < 10)
+                    boardX = 10;
             int boardY = 40;
             int boardWidth = size * pixelSize;
             int boardHeight = size * pixelSize;
+            
 
             for (int col = 0; col < size; col++)
             {
@@ -44,6 +48,8 @@ namespace ai_lab_2_CSP
             g.DrawRectangle(new Pen(borderColor, 1), new Rectangle(boardX, boardY, boardWidth, boardHeight));
 
             //fill numbers
+            if (size > 15)
+                return;
             Font myFont = new Font("Arial", 18);
             for (int col = 0; col < size; col++)
             {

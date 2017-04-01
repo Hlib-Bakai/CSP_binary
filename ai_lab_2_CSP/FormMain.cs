@@ -18,10 +18,22 @@ namespace ai_lab_2_CSP
         }
 
 
+        int[,] arr;
+
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {   if (arr != null)
+                Drawer.FillBoard(e.Graphics, arr);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
-            int[,] arr = { { 0, 1, -1, 0, 1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 }, { 1, 1, 0, -1, -1 } };
-            Drawer.FillBoard(e.Graphics, arr);
+            Randomizer.Randomize(out arr, int.Parse(textBox1.Text));
+            pictureBox1.Invalidate();
+        }
+
+        private void FormMain_Resize(object sender, EventArgs e)
+        {
+            pictureBox1.Invalidate();
         }
     }
 }
