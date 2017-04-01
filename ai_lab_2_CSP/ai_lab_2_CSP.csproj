@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSP_Solver.cs" />
     <Compile Include="Drawer.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
