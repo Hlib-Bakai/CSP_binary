@@ -16,6 +16,7 @@ namespace ai_lab_2_CSP
 
         static public void FillBoard(Graphics g, int[,] arr)
         {
+            var myPen = new Pen(borderColor);
             int size = (int)Math.Sqrt(arr.Length);
             int pixelSize = (60 - ((size / 10) * 10) + ((size/50) * 3));
             int boardX = 350 - (size * pixelSize) / 2;
@@ -41,11 +42,11 @@ namespace ai_lab_2_CSP
             for (int i = 0; i < size; i++)
             {
                 //draw lines
-                g.DrawLine(new Pen(borderColor), boardX, boardY + i * pixelSize, boardX + boardWidth, boardY + i * pixelSize);
-                g.DrawLine(new Pen(borderColor), boardX + i * pixelSize, boardY, boardX + i * pixelSize, boardY + boardHeight);
+                g.DrawLine(myPen, boardX, boardY + i * pixelSize, boardX + boardWidth, boardY + i * pixelSize);
+                g.DrawLine(myPen, boardX + i * pixelSize, boardY, boardX + i * pixelSize, boardY + boardHeight);
             }
             //draw border
-            g.DrawRectangle(new Pen(borderColor, 1), new Rectangle(boardX, boardY, boardWidth, boardHeight));
+            g.DrawRectangle(myPen, new Rectangle(boardX, boardY, boardWidth, boardHeight));
 
             //fill numbers
             if (size > 15)

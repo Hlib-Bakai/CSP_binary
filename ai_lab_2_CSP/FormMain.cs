@@ -16,6 +16,7 @@ namespace ai_lab_2_CSP
         int[,] arr;
         Thread solver;
         bool solved = false;
+        DateTime time = DateTime.Now;
 
         public FormMain()
         {
@@ -54,6 +55,7 @@ namespace ai_lab_2_CSP
         //Solve CSP
         private void button2_Click(object sender, EventArgs e)
         {
+            time = DateTime.Now;
             solved = false;
             ThreadStart starter = new ThreadStart(task);
             solver = new Thread(starter);
@@ -110,6 +112,7 @@ namespace ai_lab_2_CSP
                 if (solver.IsAlive)
                 {
                     button4.Visible = true;
+                    textBox3.Text = ((DateTime.Now - time).TotalSeconds).ToString() + " s";
                 }
                 else
                 {
@@ -132,9 +135,5 @@ namespace ai_lab_2_CSP
             solver.Abort();
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
