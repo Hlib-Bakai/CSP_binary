@@ -10,22 +10,75 @@ namespace ai_lab_2_CSP
     class Drawer
     {
         static Brush borderColor = Brushes.Black;
-        static Brush[] boardColor = { Brushes.LightGray, Brushes.Orange, Brushes.White };
+        static Brush[] boardColor = {
+            Brushes.White,
+            Brushes.LightGray,
+            Brushes.Orange,
+            Brushes.Blue,
+            Brushes.Brown,
+            Brushes.LightCoral,
+            Brushes.LightGray,
+            Brushes.LightSeaGreen,
+            Brushes.Lime,
+            Brushes.Magenta,
+            Brushes.MediumOrchid,
+            Brushes.MediumPurple,
+            Brushes.MintCream,
+            Brushes.Navy,
+            Brushes.Olive,
+            Brushes.PaleTurquoise,
+            Brushes.Peru,
+            Brushes.Red,
+            Brushes.SandyBrown,
+            Brushes.Silver};
 
+        static public void FillBoardGraph(Graphics g, int[,] arr)
+        {
+            var myPen = new Pen(borderColor);
+            int size = (int)Math.Sqrt(arr.Length);
+            int colors = (size % 2 == 0) ? (2 * size) : (2 * size + 1);
+            int pixelSize = 60;
+            int boardX = 350 - (size * pixelSize) / 2;
+            if (boardX < 10)
+                boardX = 10;
+            int boardY = 40;
+            int boardWidth = size * pixelSize;
+            int boardHeight = size * pixelSize;
 
+            for (int col = 0; col < size; col++)
+            {
+                for (int row = 0; row < size; row++)
+                {
+                    int value = arr[row, col];
+                    if (value == -1)
+                        g.FillEllipse(boardColor[0], boardX + col * pixelSize, boardY + row * pixelSize, pixelSize, pixelSize);
+                    else
+                        g.FillEllipse(boardColor[1 + value], boardX + col * pixelSize, boardY + row * pixelSize, pixelSize, pixelSize);
+                }
+            }
+
+            for (int i = 0; i < size; i++)
+            {
+                //draw lines
+                g.DrawLine(myPen, boardX, boardY + i * pixelSize, boardX + boardWidth, boardY + i * pixelSize);
+                g.DrawLine(myPen, boardX + i * pixelSize, boardY, boardX + i * pixelSize, boardY + boardHeight);
+            }
+            //draw border
+            g.DrawRectangle(myPen, new Rectangle(boardX, boardY, boardWidth, boardHeight));
+        }
 
         static public void FillBoard(Graphics g, int[,] arr)
         {
             var myPen = new Pen(borderColor);
             int size = (int)Math.Sqrt(arr.Length);
-            int pixelSize = (60 - ((size / 10) * 10) + ((size/50) * 3));
+            int pixelSize = (60 - ((size / 10) * 10) + ((size / 50) * 3));
             int boardX = 350 - (size * pixelSize) / 2;
             if (boardX < 10)
-                    boardX = 10;
+                boardX = 10;
             int boardY = 40;
             int boardWidth = size * pixelSize;
             int boardHeight = size * pixelSize;
-            
+
 
             for (int col = 0; col < size; col++)
             {

@@ -17,6 +17,7 @@ namespace ai_lab_2_CSP
         Thread solver;
         bool solved = false;
         DateTime time = DateTime.Now;
+        bool graph = false;
 
         public FormMain()
         {
@@ -26,7 +27,10 @@ namespace ai_lab_2_CSP
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             if (arr != null)
-                Drawer.FillBoard(e.Graphics, arr);
+                if (graph)
+                    Drawer.FillBoardGraph(e.Graphics, arr);
+                else
+                    Drawer.FillBoard(e.Graphics, arr);
         }
 
         //Randomize
@@ -55,6 +59,7 @@ namespace ai_lab_2_CSP
         //Solve CSP
         private void button2_Click(object sender, EventArgs e)
         {
+            graph = false;
             time = DateTime.Now;
             solved = false;
             ThreadStart starter = new ThreadStart(task);
@@ -127,7 +132,7 @@ namespace ai_lab_2_CSP
                         label3.Visible = false;
                     }
                 }
-                
+
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -135,5 +140,29 @@ namespace ai_lab_2_CSP
             solver.Abort();
         }
 
+        //GRAPH
+        private void solveGraph()
+        {
+            graph = true;
+            CSP_Solver solv = new CSP_Solver(arr);
+            try
+            {
+                solved = solv.solveGraphBT(ref arr);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            time = DateTime.Now;
+            solved = false;
+            ThreadStart starter = new ThreadStart(solveGraph);
+            solver = new Thread(starter);
+            solver.Start();
+            pictureBox1.Invalidate();
+        }
     }
 }

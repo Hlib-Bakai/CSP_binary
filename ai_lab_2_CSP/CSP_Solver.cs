@@ -8,13 +8,55 @@ namespace ai_lab_2_CSP
 {
     class CSP_Solver
     {
-        public int[,] arr;
         private int size;
+        private int colors;
 
         public CSP_Solver(int[,] garr)
         {
-            arr = garr;
-            size = (int)Math.Sqrt(arr.Length);
+            size = (int)Math.Sqrt(garr.Length);
+            colors = (size % 2 == 0) ? (2 * size) : (2 * size + 1);
+
+        }
+
+        public bool solveGraphBT(ref int[,] arr)
+        {
+            int curr = -1;
+            int curc = -1;
+            for (int row = 0; row < size; row++)
+            {
+                for (int col = 0; col < size; col++)
+                {
+                    if (arr[row, col] == -1)
+                    {
+                        curr = row;
+                        curc = col;
+                        break;
+                    }
+                }
+                if (curr != -1)
+                    break;
+            }
+
+            if (curr == -1)
+            {
+                if (checkConstaintsGraph(arr) == 1)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            for (int i = 0; i < colors; i++)
+            {
+                arr[curr, curc] = i;
+                if (checkConstaintsGraph(arr) != -1)
+                {
+                    if (solveGraphBT(ref arr) == true)
+                        return true;
+                }
+            }
+            arr[curr, curc] = -1;
+            return false;
         }
 
         public bool solveBackTracking(ref int[,] garr)
@@ -72,6 +114,166 @@ namespace ai_lab_2_CSP
 
             arr[curr, curc] = -1;
             return false;
+        }
+
+        private int checkConstaintsGraph(int[,] arr)
+        {
+            List<List<int>> pairs = new List<List<int>>();
+            pairs.Clear();
+            for (int i = 0; i < colors; i++)
+            {
+                pairs.Add(new List<int>());
+            }
+
+            bool hasEmpty = false;
+            for (int col = 0; col < size; col++)
+            {
+                for (int row = 0; row < size; row++)
+                {
+                    int val = arr[col, row];
+                    if (val == -1)
+                    {
+                        hasEmpty = true;
+                        break;
+                    }
+                    if (col != 0)
+                    {
+                        int nval = arr[col - 1, row];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else if (nval == val)
+                            return -1;
+                    }
+                    if (col != size - 1)
+                    {
+                        int nval = arr[col + 1, row];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else if (nval == val)
+                            return -1;
+                    }
+                    if (row != 0)
+                    {
+                        int nval = arr[col, row - 1];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else if (nval == val)
+                            return -1;
+                    }
+                    if (row != size - 1)
+                    {
+                        int nval = arr[col, row + 1];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else if (nval == val)
+                            return -1;
+                    }
+
+                }
+            }
+
+            for (int col = 0; col < size; col++)
+            {
+                for (int row = 0; row < size; row++)
+                {
+                    int val = arr[col, row];
+                    if (val == -1)
+                    {
+                        break;
+                    }
+                    if (col != 0)
+                    {
+                        int nval = arr[col - 1, row];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else
+                        {
+                            pairs[val].Add(nval);
+                            pairs[nval].Add(val);
+                        }
+                    }
+                    if (col != size - 1)
+                    {
+                        int nval = arr[col + 1, row];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else
+                        {
+                            pairs[val].Add(nval);
+                            pairs[nval].Add(val);
+                        }
+                    }
+                    if (row != 0)
+                    {
+                        int nval = arr[col, row - 1];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else
+                        {
+                            pairs[val].Add(nval);
+                            pairs[nval].Add(val);
+                        }
+                    }
+                    if (row != size - 1)
+                    {
+                        int nval = arr[col, row + 1];
+                        if (nval == -1)
+                        {
+                            hasEmpty = true;
+                        }
+                        else
+                        {
+                            pairs[val].Add(nval);
+                            pairs[nval].Add(val);
+                        }
+                    }
+
+                    foreach (List<int> a in pairs)
+                    {
+                        if (a.Count() < 2)
+                        {
+                            continue;
+                        }
+
+                        List<int> listTemp = new List<int>();
+                        listTemp.Clear();
+                        for (int i = 0; i < colors; i++)
+                        {
+                            listTemp.Add(0);
+                        }
+
+                        foreach (int tmp in a)
+                        {
+                            listTemp[tmp]++;
+                        }
+
+                        if (listTemp.Max() > 2)
+                            return -1;
+                    }
+
+                }
+            }
+
+
+
+            if (hasEmpty)
+                return 0;
+
+            return 1;
         }
 
 
@@ -300,4 +502,5 @@ namespace ai_lab_2_CSP
             return 1;
         }
     }
+
 }
