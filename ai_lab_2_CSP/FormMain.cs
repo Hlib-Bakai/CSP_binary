@@ -160,8 +160,10 @@ namespace ai_lab_2_CSP
             CSP_Solver solv = new CSP_Solver(arr);
             try
             {
-                solved = solv.solveGraphBT(ref arr);
-                //solved = solv.solveForwardCheckingGraph(ref arr);
+                if (radioButton1.Checked)
+                    solved = solv.solveGraphBT(ref arr);
+                else
+                    solved = solv.solveForwardCheckingGraph(ref arr);
             }
             catch (Exception ex)
             {

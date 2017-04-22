@@ -103,10 +103,11 @@ namespace ai_lab_2_CSP
 
             for (int i = 0; i < domains[curr * size + curc].Count; i++)
             {
-                arr[curr, curc] = domains[curr * size + curc][i];     
+                arr[curr, curc] = domains[curr * size + curc][i];
                 List<List<int>> listOfOldDoms = new List<List<int>>();
                 copyArray(ref domains, ref listOfOldDoms);
                 bool hasNullDomain = false;
+
                 for (int idxOfCell = curr * size + curc + 1; idxOfCell < domains.Count; idxOfCell++)
                 {
                     var dom = domains[idxOfCell];
@@ -122,16 +123,25 @@ namespace ai_lab_2_CSP
                     }
                     dom.RemoveAll(x => (x == -1));
 
+                    //Debug.WriteLine("Current: " + (curr * size + curc));
+                    //Debug.WriteLine("Domain of " + idxOfCell + " is: ");
+                    //foreach (int a in dom)
+                    //    Debug.Write(a + " ,");
+
+                    //Debug.WriteLine("");
+
                     if (dom.Count == 0)
                     {
                         hasNullDomain = true;
                         break;
                     }
                 }
+
                 if (solveForwardCheckingGraph(ref arr) == true && !hasNullDomain)
-                     return true;
+                    return true;
                 copyArray(ref listOfOldDoms, ref domains);
             }
+            arr[curr, curc] = -1;
             return false;
         }
 
