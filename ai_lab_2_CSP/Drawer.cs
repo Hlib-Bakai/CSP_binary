@@ -49,10 +49,13 @@ namespace ai_lab_2_CSP
                 for (int row = 0; row < size; row++)
                 {
                     int value = arr[row, col];
+                    int color = value;
+                    if (color >= (boardColor.Length - 1))
+                        color = color % (boardColor.Length - 1);
                     if (value == -1)
                         g.FillEllipse(boardColor[0], boardX + col * pixelSize, boardY + row * pixelSize, pixelSize, pixelSize);
                     else
-                        g.FillEllipse(boardColor[1 + value], boardX + col * pixelSize, boardY + row * pixelSize, pixelSize, pixelSize);
+                        g.FillEllipse(boardColor[1 + color], boardX + col * pixelSize, boardY + row * pixelSize, pixelSize, pixelSize);
                 }
             }
 

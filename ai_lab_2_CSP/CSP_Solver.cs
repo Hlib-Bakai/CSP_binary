@@ -108,34 +108,36 @@ namespace ai_lab_2_CSP
                 copyArray(ref domains, ref listOfOldDoms);
                 bool hasNullDomain = false;
 
-                for (int idxOfCell = curr * size + curc + 1; idxOfCell < domains.Count; idxOfCell++)
-                {
-                    var dom = domains[idxOfCell];
-                    int nextr = idxOfCell / size;
-                    int nextc = idxOfCell % size;
-                    for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
-                    {
-                        int numb = dom[idxInDomain];
-                        if (checkConstraintsBTG(arr, nextr, nextc, numb) == -1)
-                        {
-                            dom[idxInDomain] = -1;
-                        }
-                    }
-                    dom.RemoveAll(x => (x == -1));
+                checkDomains(curr, curc, ref domains, arr);
 
-                    //Debug.WriteLine("Current: " + (curr * size + curc));
-                    //Debug.WriteLine("Domain of " + idxOfCell + " is: ");
-                    //foreach (int a in dom)
-                    //    Debug.Write(a + " ,");
+                //for (int idxOfCell = curr * size + curc + 1; idxOfCell < domains.Count; idxOfCell++)
+                //{
+                //    var dom = domains[idxOfCell];
+                //    int nextr = idxOfCell / size;
+                //    int nextc = idxOfCell % size;
+                //    for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                //    {
+                //        int numb = dom[idxInDomain];
+                //        if (checkConstraintsBTG(arr, nextr, nextc, numb) == -1)
+                //        {
+                //            dom[idxInDomain] = -1;
+                //        }
+                //    }
+                //    dom.RemoveAll(x => (x == -1));
 
-                    //Debug.WriteLine("");
+                //    //Debug.WriteLine("Current: " + (curr * size + curc));
+                //    //Debug.WriteLine("Domain of " + idxOfCell + " is: ");
+                //    //foreach (int a in dom)
+                //    //    Debug.Write(a + " ,");
 
-                    if (dom.Count == 0)
-                    {
-                        hasNullDomain = true;
-                        break;
-                    }
-                }
+                //    //Debug.WriteLine("");
+
+                //    if (dom.Count == 0)
+                //    {
+                //        hasNullDomain = true;
+                //        break;
+                //    }
+                //}
 
                 if (solveForwardCheckingGraph(ref arr) == true && !hasNullDomain)
                     return true;
@@ -143,6 +145,49 @@ namespace ai_lab_2_CSP
             }
             arr[curr, curc] = -1;
             return false;
+        }
+
+        private void checkDomains(int row, int col, ref List<List<int>> domains, int[,] arr)
+        {         
+            if (col != size - 1)
+            {
+                var dom = domains[row * size + (col + 1)];
+                for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                {
+                    int numb = dom[idxInDomain];
+                    if (checkConstraintsBTG(arr, row, col+1, numb) == -1)
+                    {
+                        dom[idxInDomain] = -1;
+                    }
+                }
+                dom.RemoveAll(x => (x == -1));
+            }
+            if (row != size - 1)
+            {
+                var dom = domains[(row + 1) * size + col];
+                for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                {
+                    int numb = dom[idxInDomain];
+                    if (checkConstraintsBTG(arr, row + 1, col, numb) == -1)
+                    {
+                        dom[idxInDomain] = -1;
+                    }
+                }
+                dom.RemoveAll(x => (x == -1));
+            }
+            if (col != 0 && row != size - 1)
+            {
+                var dom = domains[(row + 1) * size + (col - 1)];
+                for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                {
+                    int numb = dom[idxInDomain];
+                    if (checkConstraintsBTG(arr, row + 1, col - 1, numb) == -1)
+                    {
+                        dom[idxInDomain] = -1;
+                    }
+                }
+                dom.RemoveAll(x => (x == -1));
+            }
         }
 
         private void copyArray(ref List<List<int>> from, ref List<List<int>> to)
