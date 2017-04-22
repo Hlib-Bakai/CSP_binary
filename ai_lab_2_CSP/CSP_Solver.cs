@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +11,31 @@ namespace ai_lab_2_CSP
     {
         private int size;
         private int colors;
+        private List<List<int>> domains;
 
         public CSP_Solver(int[,] garr)
         {
             size = (int)Math.Sqrt(garr.Length);
             colors = (size % 2 == 0) ? (2 * size) : (2 * size + 1);
+            domains = new List<List<int>>();
+            for (int i = 0; i < garr.Length; i++)
+            {
+                domains.Add(new List<int>());
+            }
+            for (int i = 0; i < garr.Length; i++)
+            {
+                domains[i] = resetDomain();
+            }
+        }
 
+        private List<int> resetDomain()
+        {
+            List<int> res = new List<int>();
+            for (int i = 0; i < colors; i++)
+            {
+                res.Add(i);
+            }
+            return res;
         }
 
         public bool solveGraphBT(ref int[,] arr)
@@ -57,6 +77,75 @@ namespace ai_lab_2_CSP
             }
             arr[curr, curc] = -1;
             return false;
+        }
+
+        public bool solveForwardCheckingGraph(ref int[,] arr)
+        {
+            int curr = -1;
+            int curc = -1;
+            for (int row = 0; row < size; row++)
+            {
+                for (int col = 0; col < size; col++)
+                {
+                    if (arr[row, col] == -1)
+                    {
+                        curr = row;
+                        curc = col;
+                        break;
+                    }
+                }
+                if (curr != -1)
+                    break;
+            }
+
+            if (curr == -1)
+                return true;
+
+            for (int i = 0; i < domains[curr * size + curc].Count; i++)
+            {
+                arr[curr, curc] = domains[curr * size + curc][i];     
+                List<List<int>> listOfOldDoms = new List<List<int>>();
+                copyArray(ref domains, ref listOfOldDoms);
+                bool hasNullDomain = false;
+                for (int idxOfCell = curr * size + curc + 1; idxOfCell < domains.Count; idxOfCell++)
+                {
+                    var dom = domains[idxOfCell];
+                    int nextr = idxOfCell / size;
+                    int nextc = idxOfCell % size;
+                    for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                    {
+                        int numb = dom[idxInDomain];
+                        if (checkConstraintsBTG(arr, nextr, nextc, numb) == -1)
+                        {
+                            dom[idxInDomain] = -1;
+                        }
+                    }
+                    dom.RemoveAll(x => (x == -1));
+
+                    if (dom.Count == 0)
+                    {
+                        hasNullDomain = true;
+                        break;
+                    }
+                }
+                if (solveForwardCheckingGraph(ref arr) == true && !hasNullDomain)
+                     return true;
+                copyArray(ref listOfOldDoms, ref domains);
+            }
+            return false;
+        }
+
+        private void copyArray(ref List<List<int>> from, ref List<List<int>> to)
+        {
+            to.Clear();
+            for (int t = 0; t < from.Count; t++)
+            {
+                to.Add(new List<int>());
+                for (int t2 = 0; t2 < from[t].Count; t2++)
+                {
+                    to[t].Add(from[t][t2]);
+                }
+            }
         }
 
         public bool solveBackTracking(ref int[,] garr)
@@ -276,6 +365,13 @@ namespace ai_lab_2_CSP
             return 1;
         }
 
+        private int checkConstraintsBTG(int[,] arr, int row, int col, int val)
+        {
+            arr[row, col] = val;
+            int res = checkConstaintsGraph(arr);
+            arr[row, col] = -1;
+            return res;
+        }
 
         private int checkConstaints(int[,] arr)
         {

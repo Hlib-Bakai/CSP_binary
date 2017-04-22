@@ -12,25 +12,24 @@ namespace ai_lab_2_CSP
         static Brush borderColor = Brushes.Black;
         static Brush[] boardColor = {
             Brushes.White,
-            Brushes.LightGray,
+            Brushes.MediumVioletRed,
             Brushes.Orange,
-            Brushes.Blue,
+            Brushes.LightBlue,
             Brushes.Brown,
             Brushes.LightCoral,
-            Brushes.LightGray,
             Brushes.LightSeaGreen,
             Brushes.Lime,
-            Brushes.Magenta,
-            Brushes.MediumOrchid,
+            Brushes.Goldenrod,
+            Brushes.Fuchsia,
             Brushes.MediumPurple,
-            Brushes.MintCream,
-            Brushes.Navy,
+            Brushes.Khaki,
+            Brushes.SpringGreen,
             Brushes.Olive,
             Brushes.PaleTurquoise,
             Brushes.Peru,
             Brushes.Red,
             Brushes.SandyBrown,
-            Brushes.Silver};
+            Brushes.CornflowerBlue};
 
         static public void FillBoardGraph(Graphics g, int[,] arr)
         {
@@ -65,6 +64,17 @@ namespace ai_lab_2_CSP
             }
             //draw border
             g.DrawRectangle(myPen, new Rectangle(boardX, boardY, boardWidth, boardHeight));
+
+            Font myFont = new Font("Arial", 18);
+            for (int col = 0; col < size; col++)
+            {
+                for (int row = 0; row < size; row++)
+                {
+                    int value = arr[row, col];
+                    if (value != -1)
+                        g.DrawString(value.ToString(), myFont, Brushes.Black, new Point(boardX + col * pixelSize + pixelSize / 3, boardY + row * pixelSize + pixelSize / 3));
+                }
+            }
         }
 
         static public void FillBoard(Graphics g, int[,] arr)

@@ -112,6 +112,19 @@ namespace ai_lab_2_CSP
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //if (arr != null && solved)
+            //{
+            //    System.Diagnostics.Debug.WriteLine("=====");
+            //    for (int i = 0; i < Math.Sqrt(arr.Length); i++)
+            //    {
+            //        for (int j = 0; j < Math.Sqrt(arr.Length); j++)
+            //        {
+            //            System.Diagnostics.Debug.Write(arr[i,j] + ",");
+            //        }
+            //        System.Diagnostics.Debug.WriteLine("");
+            //    }
+            //}
+
             pictureBox1.Invalidate();
             if (solver != null)
                 if (solver.IsAlive)
@@ -148,6 +161,7 @@ namespace ai_lab_2_CSP
             try
             {
                 solved = solv.solveGraphBT(ref arr);
+                //solved = solv.solveForwardCheckingGraph(ref arr);
             }
             catch (Exception ex)
             {
