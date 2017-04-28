@@ -108,13 +108,13 @@
             // 
             // button2
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(13, 388);
+            this.button2.Location = new System.Drawing.Point(190, 424);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(138, 41);
+            this.button2.Size = new System.Drawing.Size(103, 41);
             this.button2.TabIndex = 5;
-            this.button2.Text = "Solve backtracking";
+            this.button2.Text = "Solve binary";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -151,7 +151,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(295, 397);
+            this.label3.Location = new System.Drawing.Point(233, 396);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(131, 20);
             this.label3.TabIndex = 9;
@@ -165,7 +165,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label4.ForeColor = System.Drawing.Color.Red;
-            this.label4.Location = new System.Drawing.Point(259, 397);
+            this.label4.Location = new System.Drawing.Point(221, 396);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(162, 20);
             this.label4.TabIndex = 10;
@@ -181,9 +181,9 @@
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button4.Location = new System.Drawing.Point(45, 435);
+            this.button4.Location = new System.Drawing.Point(17, 449);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(103, 39);
             this.button4.TabIndex = 11;
             this.button4.Text = "Stop";
             this.button4.UseVisualStyleBackColor = true;
@@ -212,18 +212,19 @@
             // textBox3
             // 
             this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBox3.Location = new System.Drawing.Point(45, 463);
+            this.textBox3.Location = new System.Drawing.Point(17, 423);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(75, 20);
+            this.textBox3.Size = new System.Drawing.Size(103, 20);
             this.textBox3.TabIndex = 14;
             // 
             // button5
             // 
             this.button5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button5.Location = new System.Drawing.Point(226, 442);
+            this.button5.Enabled = false;
+            this.button5.Location = new System.Drawing.Point(299, 426);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(120, 23);
+            this.button5.Size = new System.Drawing.Size(103, 41);
             this.button5.TabIndex = 15;
             this.button5.Text = "Solve Graph";
             this.button5.UseVisualStyleBackColor = true;

@@ -12,6 +12,7 @@ namespace ai_lab_2_CSP
         private int size;
         private int colors;
         private List<List<int>> domains;
+        private List<List<int>> biDomains;
 
         public CSP_Solver(int[,] garr)
         {
@@ -25,6 +26,17 @@ namespace ai_lab_2_CSP
             for (int i = 0; i < garr.Length; i++)
             {
                 domains[i] = resetDomain();
+            }
+
+            biDomains = new List<List<int>>();
+            for (int i = 0; i < garr.Length; i++)
+            {
+                biDomains.Add(new List<int>());
+            }
+            for (int i = 0; i < garr.Length; i++)
+            {
+                biDomains[i].Add(0);
+                biDomains[i].Add(1);
             }
         }
 
@@ -108,36 +120,7 @@ namespace ai_lab_2_CSP
                 copyArray(ref domains, ref listOfOldDoms);
                 bool hasNullDomain = false;
 
-                checkDomains(curr, curc, ref domains, arr);
-
-                //for (int idxOfCell = curr * size + curc + 1; idxOfCell < domains.Count; idxOfCell++)
-                //{
-                //    var dom = domains[idxOfCell];
-                //    int nextr = idxOfCell / size;
-                //    int nextc = idxOfCell % size;
-                //    for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
-                //    {
-                //        int numb = dom[idxInDomain];
-                //        if (checkConstraintsBTG(arr, nextr, nextc, numb) == -1)
-                //        {
-                //            dom[idxInDomain] = -1;
-                //        }
-                //    }
-                //    dom.RemoveAll(x => (x == -1));
-
-                //    //Debug.WriteLine("Current: " + (curr * size + curc));
-                //    //Debug.WriteLine("Domain of " + idxOfCell + " is: ");
-                //    //foreach (int a in dom)
-                //    //    Debug.Write(a + " ,");
-
-                //    //Debug.WriteLine("");
-
-                //    if (dom.Count == 0)
-                //    {
-                //        hasNullDomain = true;
-                //        break;
-                //    }
-                //}
+                hasNullDomain = checkDomains(curr, curc, ref domains, arr);
 
                 if (solveForwardCheckingGraph(ref arr) == true && !hasNullDomain)
                     return true;
@@ -147,7 +130,7 @@ namespace ai_lab_2_CSP
             return false;
         }
 
-        private void checkDomains(int row, int col, ref List<List<int>> domains, int[,] arr)
+        private bool checkDomains(int row, int col, ref List<List<int>> domains, int[,] arr)
         {         
             if (col != size - 1)
             {
@@ -155,12 +138,16 @@ namespace ai_lab_2_CSP
                 for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
                 {
                     int numb = dom[idxInDomain];
-                    if (checkConstraintsBTG(arr, row, col+1, numb) == -1)
+                    if (checkConstraintsGFC(arr, row, col+1, numb) == -1)
                     {
                         dom[idxInDomain] = -1;
                     }
                 }
                 dom.RemoveAll(x => (x == -1));
+                if (dom.Count == 0)
+                {
+                    return false;
+                }
             }
             if (row != size - 1)
             {
@@ -168,12 +155,16 @@ namespace ai_lab_2_CSP
                 for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
                 {
                     int numb = dom[idxInDomain];
-                    if (checkConstraintsBTG(arr, row + 1, col, numb) == -1)
+                    if (checkConstraintsGFC(arr, row + 1, col, numb) == -1)
                     {
                         dom[idxInDomain] = -1;
                     }
                 }
                 dom.RemoveAll(x => (x == -1));
+                if (dom.Count == 0)
+                {
+                    return false;
+                }
             }
             if (col != 0 && row != size - 1)
             {
@@ -181,13 +172,45 @@ namespace ai_lab_2_CSP
                 for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
                 {
                     int numb = dom[idxInDomain];
-                    if (checkConstraintsBTG(arr, row + 1, col - 1, numb) == -1)
+                    if (checkConstraintsGFC(arr, row + 1, col - 1, numb) == -1)
                     {
                         dom[idxInDomain] = -1;
                     }
                 }
                 dom.RemoveAll(x => (x == -1));
+                if (dom.Count == 0)
+                {
+                    return false;
+                }
             }
+            return true;
+        }
+
+        private bool checkBiDomains(int row, int col, ref List<List<int>> domains, int[,] arr)
+        {
+            bool hasNullDomain = false;
+            for (int idxOfCell = row * size + col + 1; idxOfCell < domains.Count; idxOfCell++)
+            {
+                var dom = biDomains[idxOfCell];
+                int nextr = idxOfCell / size;
+                int nextc = idxOfCell % size;
+                if (arr[nextr, nextc] != -1)
+                    continue;
+                for (int idxInDomain = 0; idxInDomain < dom.Count; idxInDomain++)
+                {
+                    int numb = dom[idxInDomain];
+                    if (checkConstraintsBFC(arr, nextr, nextc, numb) == -1)
+                    {
+                        dom[idxInDomain] = -1;
+                    }
+                }
+                dom.RemoveAll(x => (x == -1));
+                if (dom.Count == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void copyArray(ref List<List<int>> from, ref List<List<int>> to)
@@ -203,48 +226,27 @@ namespace ai_lab_2_CSP
             }
         }
 
-        public bool solveBackTracking(ref int[,] garr)
+        public bool solveBackTracking(ref int[,] arr, int idx)
         {
-            if (solver(ref garr))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool solver(ref int[,] arr)
-        {
-            int curr = -1;
-            int curc = -1;
-            for (int row = 0; row < size; row++)
-            {
-                for (int col = 0; col < size; col++)
-                {
-                    if (arr[row, col] == -1)
-                    {
-                        curr = row;
-                        curc = col;
-                        break;
-                    }
-                }
-                if (curr != -1)
-                    break;
-            }
-
-            if (curr == -1)
-            {
+            if (idx == arr.Length)
                 if (checkConstaints(arr) == 1)
-                {
                     return true;
-                }
+            if (idx == -1)
                 return false;
-            }
+
+            int curr = idx / size;
+            int curc = idx % size;
+
+            if (arr[curr, curc] != -1)
+                return solveBackTracking(ref arr, idx + 1);
+
+
 
             //try 0
             arr[curr, curc] = 0;
             if (checkConstaints(arr) != -1)
             {
-                if (solver(ref arr) == true)
+                if (solveBackTracking(ref arr, idx + 1) == true)
                     return true;
             }
 
@@ -252,10 +254,54 @@ namespace ai_lab_2_CSP
             arr[curr, curc] = 1;
             if (checkConstaints(arr) != -1)
             {
-                if (solver(ref arr) == true)
+                if (solveBackTracking(ref arr, idx + 1) == true)
                     return true;
             }
 
+            arr[curr, curc] = -1;
+            return false;
+        }
+
+        public bool solveForwardChecking(ref int[,] arr, int idx)
+        {
+            if (idx == arr.Length)
+                return true;
+            if (idx == -1)
+                return false;
+
+            int curr = idx / size;
+            int curc = idx % size;
+
+            if (arr[curr, curc] != -1)
+                return solveForwardChecking(ref arr, idx + 1);
+
+            for (int i = 0; i < biDomains[idx].Count; i++)
+            {
+                arr[curr, curc] = biDomains[curr * size + curc][i];
+                List<List<int>> listOfOldDoms = new List<List<int>>();
+                copyArray(ref biDomains, ref listOfOldDoms);
+                bool hasNullDomain = false;
+
+                hasNullDomain = !checkBiDomains(curr, curc, ref biDomains, arr);
+
+                //Debug.WriteLine("Current: " + curr * size + curc + " with value: " + arr[curr,curc]);
+                //Debug.WriteLine("Domains:");
+                //for (int j = 0; j < biDomains.Count; j++)
+                //{
+                //    Debug.Write("Object " + j + ": ");
+                //    foreach(int a in biDomains[j])
+                //    {
+                //        Debug.Write(a + ", ");
+                //    }
+                //    Debug.WriteLine("");
+                //}
+
+
+                if (solveForwardChecking(ref arr, idx+1) == true && !hasNullDomain)
+                    return true;
+
+                copyArray(ref listOfOldDoms, ref biDomains);
+            }
             arr[curr, curc] = -1;
             return false;
         }
@@ -420,10 +466,18 @@ namespace ai_lab_2_CSP
             return 1;
         }
 
-        private int checkConstraintsBTG(int[,] arr, int row, int col, int val)
+        private int checkConstraintsGFC(int[,] arr, int row, int col, int val)
         {
             arr[row, col] = val;
             int res = checkConstaintsGraph(arr);
+            arr[row, col] = -1;
+            return res;
+        }
+
+        private int checkConstraintsBFC(int[,] arr, int row, int col, int val)
+        {
+            arr[row, col] = val;
+            int res = checkConstaints(arr);
             arr[row, col] = -1;
             return res;
         }
@@ -451,6 +505,9 @@ namespace ai_lab_2_CSP
                         rowS--;
                     else
                         rowS++;
+
+                    if (Math.Abs(rowS) > size)
+                        return -1;
                 }
                 if (!skip)
                 {
@@ -477,6 +534,9 @@ namespace ai_lab_2_CSP
                         colS--;
                     else
                         colS++;
+
+                    if (Math.Abs(colS) > size)
+                        return -1;
                 }
                 if (!skip)
                 {
